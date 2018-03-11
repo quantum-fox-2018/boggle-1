@@ -1,6 +1,9 @@
+var dictionaryExample = ['RAMA','DIAN','SYAH','APPLE','BUDI','SUPER','KEY','ABI','SUSU','MOS','BURGER','MINUM'];
+//Kamus dan rowcolumn generate
+solveBoggle(dictionaryExample,10,10);
 
 //Fungsi untuk membuat board boggle
-function generateBoard(rowBoard,columnBoard){
+function shake(rowBoard,columnBoard){
   var boggleBoard = [];
   const hurufAbjad = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
    for(let i=0;i<rowBoard;i++){
@@ -12,33 +15,35 @@ function generateBoard(rowBoard,columnBoard){
    return boggleBoard;
 }
 
-function solveBoggle(words,rowBoard,columnBoard){
 
-  let boggleBoard = generateBoard(rowBoard,columnBoard);
+//Fungsi untuk mencari kata boggle
+function solveBoggle(dictionaryExample,rowBoard,columnBoard){
+
+  let boggleBoard = shake(rowBoard,columnBoard);
   let boggleWords = [];
 
-  for(var counter=0;counter<words.length;counter++){
+  for(var counter=0;counter<dictionaryExample.length;counter++){
 
     for(let i=0;i<boggleBoard.length;i++){
 
       var solveBoard = boggleBoard;
 
       for(let j=0;j<boggleBoard.length;j++){
-        if(solveBoard[i][j] == words[counter][0]){
+        if(solveBoard[i][j] == dictionaryExample[counter][0]){
 
           var coordinateX = i;
           var coordinateY = j;
           solveBoard[i][j] = ' ';
-          var newWords = words[counter].slice(1);
+          var newWords = dictionaryExample[counter].slice(1);
           var checkCondition = checkBoggle(coordinateX,coordinateY,newWords,solveBoard)
 
           if(checkCondition == true){
-            solveBoard[i][j] = words[counter][0];
-            boggleWords.push(words[counter]);
+            solveBoard[i][j] = dictionaryExample[counter][0];
+            boggleWords.push(dictionaryExample[counter]);
             break;
           }
           else if(checkCondition == false){
-            solveBoard[coordinateX][coordinateY] = words[counter][0];
+            solveBoard[coordinateX][coordinateY] = dictionaryExample[counter][0];
           }
         }
       }
@@ -62,6 +67,7 @@ function solveBoggle(words,rowBoard,columnBoard){
   }
 }
 
+//Fungsi untuk mengecek apakah kamus tersebut ada apa tidak
 function checkBoggle(coordinateX,coordinateY,newWords,solveBoard){
 
   let batasBawahX = coordinateX-1;
@@ -117,6 +123,3 @@ function checkBoggle(coordinateX,coordinateY,newWords,solveBoard){
   return checkCondition
 
 }
-
-//Kamus dan rowcolumn generate
-solveBoggle(['RAMA','MIP','LAG','APPLE','MOS'],6,6);
