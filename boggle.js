@@ -59,6 +59,7 @@ class BoggleBoard {
         }
       }
     }
+    return false;
   }
 
   checkBoggle(arrBoard, row, col, word) {
@@ -66,12 +67,12 @@ class BoggleBoard {
     let col1 = col-1; let col2 = col+1;
 
     if (word.length > 0) {
+      //determine the search scope on 3x3, around the char coordinate
       if (row1 < 0) {
         row1 = row;
       } else if (row2 > arrBoard.length) {
         row2 = row;
       }
-
       if (col1 < 0) {
         col1 = col;
       } else if (col2 > arrBoard.length) {
@@ -96,8 +97,8 @@ class BoggleBoard {
     } else {
       return true;
     }
+    return false;
   }
-
 }
 
 // manual boggle board for testing purpose
