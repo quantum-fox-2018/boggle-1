@@ -19,14 +19,15 @@ class Boggle {
   }
 
   startingPoint(start){
+    let arrayOfStart = [];
     for(let i=0; i<this.board.length; i++){
       for(let j=0; j<this.board[i].length; j++){
         if(this.board[i][j]==start){
-          return [i,j];
+          arrayOfStart.push([i,j]);
         }
       }
     }
-    return -1;
+    return arrayOfStart;
   }
 
   checkBoard(board,row,col,str){
@@ -44,18 +45,18 @@ class Boggle {
 
   searchBoard(){
     let array = [];
-    for(let i=0; i<this.dict.length; i++){
-      let currentWord = this.dict[i];
-      let str = currentWord[0]; //a
-      let max = currentWord.length; //3
-      let start = this.startingPoint(str); // [baris,kolom] atau -1
-      let newStr = currentWord[0]; //a
-      if(start!==-1){
-        let baris = start[0];
-        let kolom = start[1];
+    for(let i=0; i<this.dict.length; i++){ // looping kata di dalam kamus
+      let currentWord = this.dict[i]; // kata di dalam kamus
+      let str = currentWord[0]; // huruf pertama di dalam kata
+      let max = currentWord.length; // panjang kata
+      let start = this.startingPoint(str); // array of koordinat
+      let newStr = currentWord[0]; // kata baru yang didapat dari board
+      for(let w=0; w<start.length; w++){ // looping koordinat
+        let baris = start[w][0];
+        let kolom = start[w][1];
         for(let j=1; j<max; j++){
-          str = currentWord[j]; // k
-          let check = this.checkBoard(this.board,baris,kolom,str); // board,baris,kolom,k
+          str = currentWord[j];
+          let check = this.checkBoard(this.board,baris,kolom,str);
           if(check!==-1){
             newStr += str;
             baris = check[0];
@@ -68,9 +69,21 @@ class Boggle {
     return array;
   }
 
+  comparrison(){
+    let result = this.searchBoard();
+    let firstDict = this.dict;
+    for(let i=0; i<firstDict.length; i++){
+      for(let j=0; j<result.length; j++){
+        if(firstDict[i]==result[j]){
+          console.log(result[j]);
+        }
+      }
+    }
+  }
 }
 
 var kamus = ['aku','kamu','kita','dia','anda'];
 var boggle = new Boggle(4,kamus);
 console.log(boggle);
-console.log(boggle.searchBoard());
+console.log(boggle.searchBoard())
+boggle.comparrison();
