@@ -24,12 +24,13 @@
 
 const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const kamus = ["GEEKS", "FOR", "QUIZ", "GO"];
-const board = [['G','I','Z'],
-                ['U','E','K'],
-                ['Q','S','E']];
+// const board = [['G','I','Z'],
+//                 ['U','E','K'],
+//                 ['Q','S','E']];
 
 class boggle{
-  constructor(kamus,board){
+  constructor(kamus){
+    this.alphabets = alphabets;
     this.dictionary = kamus;
     this.checker = [this.checkUp, this.checkUpRight, this.checkRight,
                     this.checkDownRight, this.checkDown, this.checkDownLeft,
@@ -37,6 +38,7 @@ class boggle{
   }
 
   shake(puzzleLength){
+    let boardLength = puzzleLength;
     let board = this.getBoard(puzzleLength);
     let dictionary = this.dictionary;
     let result = this.getResultItems(dictionary);
@@ -44,7 +46,7 @@ class boggle{
     for(let rowBoard = 0; rowBoard < board.length; rowBoard++){
       for(let colBoard = 0; colBoard < board.length; colBoard++){
         for(let indexDict = 0; indexDict < board.length; indexDict++){
-          if(board[rowBoard][colBoard] === dictionary[indexDict][0] && this.checkMatch(dictionary[indexDict],[rowBoard,colBoard])){
+          if(board[rowBoard][colBoard] === dictionary[indexDict][0] && this.checkMatch(dictionary[indexDict],[rowBoard,colBoard],boardLength)){
             result[indexDict].count++;
           }
         }
@@ -56,11 +58,13 @@ class boggle{
 
   getBoard(length){
     let board = [];
-    for(var row = 0; row < length; row++){
-      for(var col = 0; col < length; col++){
-        (visitArray[row]) ? visitArray[row].push(false) : visitArray[row] = [false];
+    for(let row = 0; row < length; row++){
+      for(let col = 0; col < length; col++){
+        (board[row]) ? board[row].push(this.alphabets[Math.floor(Math.random()*(25-0+1) + 0)]) : board[row] = [this.alphabets[Math.floor(Math.random()*(25-0+1) + 0)]];
       }
     }
+
+    return board;
   }
 
   getResultItems(dictionary){
@@ -73,69 +77,210 @@ class boggle{
     return resultItems;
   }
 
-  getVisitArray(){
+  getVisitArray(boardLength){
+    let length = boardLength;
     let visitArray = [];
-    for(var row = 0; row < 3; row++){
-      for(var col = 0; col < 3; col++){
+    for(let row = 0; row < length; row++){
+      for(let col = 0; col < length; col++){
         (visitArray[row]) ? visitArray[row].push(false) : visitArray[row] = [false];
       }
     }
     return visitArray;
   }
 
-  checkMatch(searchedWord,startBoardCoordinate){
+  checkMatch(searchedWord,startBoardCoordinate,boardLength){
+    let length = boardLength;
     let word = searchedWord;
-    let startCoordinate = startBoardCoordinate;
+    let currentPosition = startBoardCoordinate;
+    let previousPosition = startBoardCoordinate;
     let checker = this.checker;
-    let visited = this.getVisitArray();
-    visited[startCoordinate[0]][startCoordinate[0]] = true;
+    let visited = this.getVisitArray(length);
+    visited[currentPosition[0]][currentPosition[0]] = true;
 
-    for(let indexHuruf = 0; indexHuruf < word.length; indexHuruf++){
+    for(let indexHuruf = 1; indexHuruf < word.length; indexHuruf++){
       for(let checkerIndex = 0; checkerIndex < checker.length; checkerIndex++){
-        if(this.checker[checkerIndex](word[indexHuruf],startCoordinate),visited[][]){
-
+        if(this.checker[checkerIndex](word[indexHuruf],currentPosition),visited,length){
+          switch(checkerIndex){
+            case 0:
+              visited[currentPosition[0]-1][currentPosition[1]] = true;
+              previousPosition = currentPosition;
+              currentPosition[0] = currentPosition[0]-1;
+              currentPosition[1] = currentPosition[1];
+              break;
+            case 1:
+              visited[currentPosition[0]-1][currentPosition[1]+1] = true;
+              previousPosition = currentPosition;
+              currentPosition[0] = currentPosition[0]-1;
+              currentPosition[1] = currentPosition[1]+1;
+              break;
+            case 2:
+              visited[currentPosition[0]][currentPosition[1]+1] = true;
+              previousPosition = currentPosition;
+              currentPosition[0] = currentPosition[0];
+              currentPosition[1] = currentPosition[1]+1;
+              break;
+            case 3:
+              visited[currentPosition[0]+1][currentPosition[1]+1] = true;
+              previousPosition = currentPosition;
+              currentPosition[0] = currentPosition[0]+1;
+              currentPosition[1] = currentPosition[1]+1;
+              break;
+            case 4:
+              visited[currentPosition[0]+1][currentPosition[1]] = true;
+              previousPosition = currentPosition;
+              currentPosition[0] = currentPosition[0]+1;
+              currentPosition[1] = currentPosition[1];
+              break;
+            case 5:
+              visited[currentPosition[0]+1][currentPosition[1]-1] = true;
+              previousPosition = currentPosition;
+              currentPosition[0] = currentPosition[0]+1;
+              currentPosition[1] = currentPosition[1]-1;
+              break;
+            case 6:
+              visited[currentPosition[0]][currentPosition[1]-1] = true;
+              previousPosition = currentPosition;
+              currentPosition[0] = currentPosition[0];
+              currentPosition[1] = currentPosition[1]-1;
+              break;
+            case 7:
+              visited[currentPosition[0]-1][currentPosition[1]-1] = true;
+              previousPosition = currentPosition;
+              currentPosition[0] = currentPosition[0]-1;
+              currentPosition[1] = currentPosition[1]-1;
+              break;
+          }
         }
-      }
+      } if(previousPosition === currentPosition) return false;
     }
+    return true;
   }
 
   // arrah mata angin -> up[row-1,col],upRight[row-1,col+1],right[row,col+1],downRight[row+1,col+1]
   //                     dow[row+1,col],downLeft[row+1,col-1],left[row,col-1],upLeft[row+1,col-1]
 
-  checkUp(){
-    if(huruf === this.board[row-1][col] && ){}
+  checkUp(text, coordinate, visitCoordinate,boardLength){
+    let huruf = text;
+    let row = coordinate[0];
+    let col = coordinate[1];
+    let visited = visitCoordinate;
+    let length = boardLength
+
+    if(row < 0 || row >= length || col < 0 || col >= length) return false;
+
+    if(typeof this.board[row-1][col] !== 'undefined' && huruf === this.board[row-1][col] && !visited[row-1][col]){
+      return true;
+    }
+    return false
   }
 
-  checkUpRight(){
-    if(huruf === this.board[row-1][col+1]){}
+  checkUpRight(text, coordinate, visitCoordinate,boardLength){
+    let huruf = text;
+    let row = coordinate[0];
+    let col = coordinate[1];
+    let visited = visitCoordinate;
+    let length = boardLength;
+
+    if(row < 0 || row >= length || col < 0 || col >= length) return false;
+
+    if(typeof this.board[row-1][col+1] !== 'undefined' && huruf === this.board[row-1][col+1] && !visited[row-1][col+1]){
+      return true;
+    }
+    return false
   }
 
-  checkRight(){
-    if(huruf === this.board[row][col+1]){}
+  checkRight(text, coordinate, visitCoordinate,boardLength){
+    let huruf = text;
+    let row = coordinate[0];
+    let col = coordinate[1];
+    let visited = visitCoordinate;
+    let length = boardLength;
+
+    if(row < 0 || row >= length || col < 0 || col >= length) return false;
+
+    if(typeof this.board[row][col+1] !== 'undefined' && huruf === this.board[row][col+1] && !visited[row][col+1]){
+      return true;
+    }
+    return false
   }
 
-  checkDownRight(){
-    if(huruf === this.board[row+1][col+1]){}
+  checkDownRight(text, coordinate, visitCoordinate,boardLength){
+    let huruf = text;
+    let row = coordinate[0];
+    let col = coordinate[1];
+    let visited = visitCoordinate;
+    let length = boardLength;
+
+    if(row < 0 || row >= length || col < 0 || col >= length) return false;
+
+    if(typeof this.board[row+1][col+1] !== 'undefined' && huruf === this.board[row+1][col+1] && !visited[row+1][col+1]){
+      return true;
+    }
+    return false
   }
 
-  checkDown(){
-    if(huruf === this.board[row+1][col]){}
+  checkDown(text, coordinate, visitCoordinate,boardLength){
+    let huruf = text;
+    let row = coordinate[0];
+    let col = coordinate[1];
+    let visited = visitCoordinate;
+    let length = boardLength;
+
+    if(row < 0 || row >= length || col < 0 || col >= length) return false;
+
+    if(typeof this.board[row+1][col] !== 'undefined' && huruf === this.board[row+1][col] && !visited[row+1][col]){
+      return true;
+    }
+    return false
   }
 
-  checkDownLeft(){
-    if(huruf === this.board[row+1][col-1]){}
+  checkDownLeft(text, coordinate, visitCoordinate,boardLength){
+    let huruf = text;
+    let row = coordinate[0];
+    let col = coordinate[1];
+    let visited = visitCoordinate;
+    let length = boardLength;
+
+    if(row < 0 || row >= length || col < 0 || col >= length) return false;
+
+    if(typeof this.board[row+1][col-1] !== 'undefined' && huruf === this.board[row+1][col-1] && !visited[row+1][col-1]){
+      return true;
+    }
+    return false
   }
 
-  checkLeft(){
-    if(huruf === this.board[row][col-1]){}
+  checkLeft(text, coordinate, visitCoordinate,boardLength){
+    let huruf = text;
+    let row = coordinate[0];
+    let col = coordinate[1];
+    let visited = visitCoordinate;
+    let length = boardLength;
+
+    if(row < 0 || row >= length || col < 0 || col >= length) return false;
+
+    if(typeof this.board[row][col-1] !== 'undefined' && huruf === this.board[row][col-1] && !visited[row][col-1]){
+      return true;
+    }
+    return false
   }
 
-  checkUpLeft(){
-    if(huruf === this.board[row-1][col-1]){}
+  checkUpLeft(text, coordinate, visitCoordinate,boardLength){
+    let huruf = text;
+    let row = coordinate[0];
+    let col = coordinate[1];
+    let visited = visitCoordinate;
+    let length = boardLength;
+
+    if(row < 0 || row >= length || col < 0 || col >= length) return false;
+
+    if(typeof this.board[row-1][col-1] !== 'undefined' && huruf === this.board[row-1][col-1] && !visited[row-1][col-1]){
+      return true;
+    }
+    return false
   }
 
 }
 
 
-let bogel = new boggle(kamus,board);
-console.log(bogel.shake());
+let bogel = new boggle(kamus);
+console.log(bogel.shake(3));
