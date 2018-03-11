@@ -15,7 +15,7 @@ function findWords(){
     let arrResult = [];
     for(let wordCount = 0; wordCount<words.length; wordCount++){
         if(findWordsInBoard(words[wordCount])){
-            arrResult.push(word[wordCount]);
+            arrResult.push(words[wordCount]);
         }
         // console.log(findWordsInBoard(words[wordCount]));
     }
@@ -25,15 +25,15 @@ function findWords(){
 }
 
 function check3by3 (row, column, word, wordCount){
-    for(let count1 = column-1; count1<=column+1; count1++){
-        for(let count2 = row-1; count2<=row+1; count2++){
+    for(let count1 = row-1; count1<=row+1; count1++){
+        for(let count2 = column-1; count2<=column+1; count2++){
             if(count1>=0 && count1<board.length && count2>=0 && count2 < board.length){
-                console.log(`on board : ${board[count1][+count2]} banding dengan ${word.charAt(wordCount)}`);
+                console.log(`on board : ${board[count1][+count2]} mencari huruf ${word.charAt(wordCount)}`);
                 debugger;
                 
                 if(wordCount === word.length-1){
                     return true;
-                }else if(word.charAt(wordCount+1) === board[count1][count2]){
+                }else if(word.charAt(wordCount) === board[count1][count2]){
                     wordCount++;
                     return check3by3(count1, count2, word, wordCount);
                 }
@@ -50,9 +50,11 @@ function findWordsInBoard(word){
             if(word.charAt(0) === board[counter][counter2]){
                 
                 //Check kata sekeliling kata yg ditemukan dan di loop sebanyak panjang kata yg ingin dicari
-                let wordCount = 0;
+                let wordCount = 1;
                 exit = check3by3(counter, counter2, word, wordCount);
-                                
+                if(exit === true){
+                    return exit;
+                }     
             }
         }
     }
