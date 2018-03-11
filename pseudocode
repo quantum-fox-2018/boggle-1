@@ -1,0 +1,14 @@
+start
+run shake function to generate boggle board with randomize alphabet
+get the words string from dictionary file & convert to array
+for each word in words array
+  check the word status
+  is the first char of the word exist on the game board?
+  if available, do boggle check
+    check in 3x3 around the coordinate of the word, is the next char for the word available?
+    if available, do boggle check again (in recursive), until the last char of the word
+  is all the char on the word exist and fulfill all the boggle check?
+  if true, mark the word as a result
+count all boggle words
+result print all boggle word(s) found
+end
