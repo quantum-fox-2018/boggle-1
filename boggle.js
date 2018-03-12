@@ -3,13 +3,14 @@ const data = require('./data').words;
 class boggle {
   constructor(indexI, indexJ, kamus) {
     this.abjad = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    this.randomWords = 'DGHIALPSYEUTEORN';
+    // this.randomWords = 'DGHIALPSYEUTEORN';
+    // this.randomWords = 'DLHIAGPSYEUTEORN';
     this.board = [];
     this.kamus = kamus;
     // this.currWords = this.kamus[this.kamus.length-1];
     this.wordResult = [];
 
-    //buat testting tanpa random
+    // // buat testting tanpa random
     // let index = 0;
     // for(let i = 0; i < indexI; i++){
     //     let tempBoard = [];
@@ -32,6 +33,7 @@ class boggle {
     }
 
     // return this.board;
+    // this.cekKamus = this.cekKamus();
 
   }
 
@@ -40,28 +42,55 @@ class boggle {
       let words = this.kamus;
       let board = this.board;
       let result = this.wordResult;
-
+      // console.log(board);
       for (let h = 0; h < words.length; h++) {
           let TempWord = '';
           let tempKord = [];
+          let nextKord = ''; //kordinat dari kata selanjutnyas
           for(let i = 0; i < words[h].length; i++){
               for(let j = 0; j < board.length; j++){
                   for(let k = 0; k < board[j].length; k++){
                       if(words[h][i] == board[j][k]){
                           if(words[h][i] != TempWord[i]){
                               let currAbjadPos = this.cekAround(j, k, words[h], tempKord);
-                              if(currAbjadPos.indexOf(words[h][i+1]) != -1 ){
-                                // console.log(words[h][i+1]+' '+currAbjadPos.indexOf(words[h][i+1]));
-                                TempWord += board[j][k];
-                                tempKord.push(''+j+k);
 
-                                // console.log(board[j][k], this.cekAround(j, k, words[h], tempKord));
-                              }
+                              if(nextKord == ''){
+                                  if(currAbjadPos.indexOf(words[h][i+1]) != -1 ){
+                                    // console.log(words[h][i+1]+' '+currAbjadPos.indexOf(words[h][i+1]));
+                                    TempWord += board[j][k];
+                                    tempKord.push(''+j+k);
+                                    // console.log(words[h][i]+': '+currAbjadPos);
+                                    if(currAbjadPos[i+1] != undefined){
+                                      // nextKord = currAbjadPos[i+1][0]+''+currAbjadPos[i+1][1];
+                                      let nexIndex = currAbjadPos.indexOf(words[h][i+1])+1;
+                                      nextKord = currAbjadPos[nexIndex];
+                                      // console.log(nextKord);
+                                    }
 
-                              if(words[h][i] == words[h][words[h].length-1]
-                                && TempWord.length == (words[h].length-1) ){
+                                    // console.log(board[j][k], this.cekAround(j, k, words[h], tempKord));
+                                  }
+                              }else if(nextKord == ''+j+k){
+                                  // console.log('Masuk sini :'+board[j][k]);
+                                  if(currAbjadPos.indexOf(words[h][i+1]) != -1 ){
+                                    // console.log(words[h][i+1]+' '+currAbjadPos.indexOf(words[h][i+1]));
+                                    TempWord += board[j][k];
+                                    tempKord.push(''+j+k);
+                                    // console.log(words[h][i]+': '+currAbjadPos);
+                                    if(currAbjadPos[i+1] != undefined){
+                                      // nextKord = currAbjadPos[i+1][0]+''+currAbjadPos[i+1][1];
+                                      let nexIndex = currAbjadPos.indexOf(words[h][i+1])+1;
+                                      nextKord = currAbjadPos[nexIndex];
+                                      // console.log(nextKord);
+                                    }
 
-                                TempWord += board[j][k];
+                                    // console.log(board[j][k], this.cekAround(j, k, words[h], tempKord));
+                                  }
+
+                                  if(words[h][i] == words[h][words[h].length-1]
+                                    && TempWord.length == (words[h].length-1) ){
+
+                                    TempWord += board[j][k];
+                                  }
                               }
 
                           }
@@ -108,6 +137,10 @@ class boggle {
     return abjad[randomNum];
   }
 
+  nextKord(){
+
+  }
+
   //untuk mengecek di sekitar current words
   cekAround(indexI, indexJ, words, fisitedKord){
     let boxArr = [];
@@ -136,6 +169,7 @@ class boggle {
             if((''+i+j) != (''+indexI+indexJ)){
                 if(fisitedKord.indexOf(''+i+j) == -1){
                     boxArr.push(board[i][j]);
+                    boxArr.push(''+i+j);
                 }
 
             }
