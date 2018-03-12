@@ -1,7 +1,7 @@
 var kata = require("./data.js");
 
 //console.log(words);
-//var kata = [ 'AT', 'AX', 'GLADE', 'HOME', 'IS', 'OF', 'TEA' ]
+//var kata = [ 'AT', 'AXEN', 'GLADE', 'HOME', 'IS', 'OF', 'TEA' ]
 function generateBox(rowCol){
   var char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   var boggleBox = []
@@ -24,12 +24,12 @@ function boggleSolve(words,boggleBox){
   inner :
   for(var i = 0; i<words.length;i++){
     let found = [];
-    var status0 = false
+    var firstChar = false
     var len = words[i].length
     var out = false
     outer :
     for(j =0; j< len; j++){
-      console.log(j)
+      //console.log(j)
       //cari huruf awal
       let pos = [];
       if(j === 0){
@@ -40,24 +40,22 @@ function boggleSolve(words,boggleBox){
                   found.push(words[i][j])
                   pos.push(k,l)
                   resultPos.push(pos)
-                  status0 = true;
+                  firstChar = true;
                   j++
                   break outer2;
               }
           }
         }
       }
-      if(status0 === false){
-        i++
-        break outer
-      }else{
-  if((checkBoggle(pos[0],pos[1],words[i][j],boggleBox)) === true){
-    found.push(words[i][j])
-   j++;
-  }
+      while(firstChar && checkBoggle(pos[0],pos[1],words[i][j],boggleBox)[0]){
+          found.push(words[i][j])
+          pos = firstChar && checkBoggle(pos[0],pos[1],words[i][j],boggleBox)[1]
+          j++
+//          console.log('found:', found)
+//          console.log(`j (${j}): ${words[i][j]}`)
       }
     }
-    console.log(found)
+    //console.log(found)
     if(found.join('') === words[i]){
       resultWord.push(words[i]);
       countFound ++
@@ -72,8 +70,6 @@ function checkBoggle(row,col,letter,box){
   let rowKanan = row +1;
   let colBawah = col-1;
   let colAtas = col+1;
-  //let words = newWords;
-
 
     if(rowKiri<0){
       rowKiri = row;
@@ -87,19 +83,24 @@ function checkBoggle(row,col,letter,box){
     else if(colAtas>box.length-1){
       colAtas = col;
     }
-
     for(let m = rowKiri; m <= rowKanan; m++){
 
       for(let n = colBawah; n <= colAtas; n++){
 
           if(letter === box[m][n]){
-            return true
+            return [true, [m,n]]
           }
       }
     }
     return false
 }
-var kotak = generateBox(5)
+var kotak = generateBox(10)
+//var kotak = [ [ 'A', 'X', 'E', 'N', 'E' ],
+  // [ 'J', 'C', 'N', 'M', 'O' ],
+  // [ 'D', 'V', 'S', 'Y', 'Y' ],
+  // [ 'B', 'A', 'W', 'G', 'D' ],
+  // [ 'L', 'Y', 'Q', 'N', 'W' ] ]
+
 
 console.log(kotak)
 console.log(boggleSolve(kata,kotak));
